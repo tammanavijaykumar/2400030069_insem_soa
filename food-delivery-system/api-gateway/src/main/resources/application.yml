@@ -1,0 +1,39 @@
+
+server:
+  port: 8080
+
+spring:
+  application:
+    name: API-GATEWAY
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: user-route
+              uri: lb://USER-SERVICE
+              predicates:
+                - Path=/users,/users/**
+
+            - id: restaurant-route
+              uri: lb://RESTAURANT-SERVICE
+              predicates:
+                - Path=/restaurants,/restaurants/**
+
+            - id: gateway-home
+              uri: http://localhost:8761
+              predicates:
+                - Path=/
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+        instance:
+    hostname: localhost
+    prefer-ip-address: false
+    status-page-url: http://localhost:8080/actuator/info
+    home-page-url: http://localhost:8080/
